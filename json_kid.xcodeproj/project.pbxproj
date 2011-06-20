@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA045CB213AFCBE300AFED3C /* JKStaticWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = CA045CB013AFCBE300AFED3C /* JKStaticWriter.h */; };
+		CA045CB313AFCBE300AFED3C /* JKStaticWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = CA045CB113AFCBE300AFED3C /* JKStaticWriter.m */; };
+		CA045CB613AFCC1D00AFED3C /* JKDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = CA045CB513AFCC1D00AFED3C /* JKDefs.h */; };
+		CA045CB813AFCC5800AFED3C /* JKConstant.m in Sources */ = {isa = PBXBuildFile; fileRef = CA045CB713AFCC5800AFED3C /* JKConstant.m */; };
+		CA045CC013AFE2FF00AFED3C /* NSDictionary+JKJson.h in Headers */ = {isa = PBXBuildFile; fileRef = CA045CBE13AFE2FF00AFED3C /* NSDictionary+JKJson.h */; };
+		CA045CC113AFE2FF00AFED3C /* NSDictionary+JKJson.m in Sources */ = {isa = PBXBuildFile; fileRef = CA045CBF13AFE2FF00AFED3C /* NSDictionary+JKJson.m */; };
+		CA045CC413AFE3F300AFED3C /* NSArray+JKJson.h in Headers */ = {isa = PBXBuildFile; fileRef = CA045CC213AFE3F300AFED3C /* NSArray+JKJson.h */; };
+		CA045CC513AFE3F300AFED3C /* NSArray+JKJson.m in Sources */ = {isa = PBXBuildFile; fileRef = CA045CC313AFE3F300AFED3C /* NSArray+JKJson.m */; };
+		CA045CC713AFE46200AFED3C /* JsonKid.h in Headers */ = {isa = PBXBuildFile; fileRef = CA045CC613AFE46200AFED3C /* JsonKid.h */; };
 		CA6873F613AE832200FA38F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA6873F513AE832200FA38F6 /* Foundation.framework */; };
 		CA68740113AE832300FA38F6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA68740013AE832300FA38F6 /* SenTestingKit.framework */; };
 		CA68740313AE832300FA38F6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA68740213AE832300FA38F6 /* UIKit.framework */; };
@@ -16,6 +25,8 @@
 		CA68740F13AE832300FA38F6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA68740D13AE832300FA38F6 /* InfoPlist.strings */; };
 		CA68741113AE832300FA38F6 /* json_kidTests.h in Resources */ = {isa = PBXBuildFile; fileRef = CA68741013AE832300FA38F6 /* json_kidTests.h */; };
 		CA68741313AE832300FA38F6 /* json_kidTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA68741213AE832300FA38F6 /* json_kidTests.m */; };
+		CA68741E13AE842400FA38F6 /* JKStaticReader.h in Headers */ = {isa = PBXBuildFile; fileRef = CA68741C13AE842400FA38F6 /* JKStaticReader.h */; };
+		CA68741F13AE842400FA38F6 /* JKStaticReader.m in Sources */ = {isa = PBXBuildFile; fileRef = CA68741D13AE842400FA38F6 /* JKStaticReader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,17 +40,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA045CB013AFCBE300AFED3C /* JKStaticWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JKStaticWriter.h; sourceTree = "<group>"; };
+		CA045CB113AFCBE300AFED3C /* JKStaticWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JKStaticWriter.m; sourceTree = "<group>"; };
+		CA045CB513AFCC1D00AFED3C /* JKDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JKDefs.h; sourceTree = "<group>"; };
+		CA045CB713AFCC5800AFED3C /* JKConstant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JKConstant.m; sourceTree = "<group>"; };
+		CA045CBE13AFE2FF00AFED3C /* NSDictionary+JKJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+JKJson.h"; sourceTree = "<group>"; };
+		CA045CBF13AFE2FF00AFED3C /* NSDictionary+JKJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+JKJson.m"; sourceTree = "<group>"; };
+		CA045CC213AFE3F300AFED3C /* NSArray+JKJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+JKJson.h"; sourceTree = "<group>"; };
+		CA045CC313AFE3F300AFED3C /* NSArray+JKJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+JKJson.m"; sourceTree = "<group>"; };
+		CA045CC613AFE46200AFED3C /* JsonKid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonKid.h; sourceTree = "<group>"; };
 		CA6873F213AE832200FA38F6 /* libjson_kid.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libjson_kid.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA6873F513AE832200FA38F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		CA6873F913AE832200FA38F6 /* json_kid-Prefix.pch */ = {isa = PBXFileReference; path = "json_kid-Prefix.pch"; sourceTree = "<group>"; };
+		CA6873F913AE832200FA38F6 /* json_kid-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "json_kid-Prefix.pch"; sourceTree = "<group>"; };
 		CA6873FF13AE832300FA38F6 /* json_kidTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = json_kidTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA68740013AE832300FA38F6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		CA68740213AE832300FA38F6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		CA68740513AE832300FA38F6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
-		CA68740C13AE832300FA38F6 /* json_kidTests-Info.plist */ = {isa = PBXFileReference; path = "json_kidTests-Info.plist"; sourceTree = "<group>"; };
+		CA68740C13AE832300FA38F6 /* json_kidTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "json_kidTests-Info.plist"; sourceTree = "<group>"; };
 		CA68740E13AE832300FA38F6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA68741013AE832300FA38F6 /* json_kidTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = json_kidTests.h; sourceTree = "<group>"; };
 		CA68741213AE832300FA38F6 /* json_kidTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = json_kidTests.m; sourceTree = "<group>"; };
+		CA68741C13AE842400FA38F6 /* JKStaticReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JKStaticReader.h; sourceTree = "<group>"; };
+		CA68741D13AE842400FA38F6 /* JKStaticReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JKStaticReader.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +122,17 @@
 			isa = PBXGroup;
 			children = (
 				CA6873F813AE832200FA38F6 /* Supporting Files */,
+				CA68741C13AE842400FA38F6 /* JKStaticReader.h */,
+				CA68741D13AE842400FA38F6 /* JKStaticReader.m */,
+				CA045CB013AFCBE300AFED3C /* JKStaticWriter.h */,
+				CA045CB113AFCBE300AFED3C /* JKStaticWriter.m */,
+				CA045CB513AFCC1D00AFED3C /* JKDefs.h */,
+				CA045CB713AFCC5800AFED3C /* JKConstant.m */,
+				CA045CBE13AFE2FF00AFED3C /* NSDictionary+JKJson.h */,
+				CA045CBF13AFE2FF00AFED3C /* NSDictionary+JKJson.m */,
+				CA045CC213AFE3F300AFED3C /* NSArray+JKJson.h */,
+				CA045CC313AFE3F300AFED3C /* NSArray+JKJson.m */,
+				CA045CC613AFE46200AFED3C /* JsonKid.h */,
 			);
 			path = json_kid;
 			sourceTree = "<group>";
@@ -138,6 +171,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA68741E13AE842400FA38F6 /* JKStaticReader.h in Headers */,
+				CA045CB213AFCBE300AFED3C /* JKStaticWriter.h in Headers */,
+				CA045CB613AFCC1D00AFED3C /* JKDefs.h in Headers */,
+				CA045CC013AFE2FF00AFED3C /* NSDictionary+JKJson.h in Headers */,
+				CA045CC413AFE3F300AFED3C /* NSArray+JKJson.h in Headers */,
+				CA045CC713AFE46200AFED3C /* JsonKid.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +278,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA68741F13AE842400FA38F6 /* JKStaticReader.m in Sources */,
+				CA045CB313AFCBE300AFED3C /* JKStaticWriter.m in Sources */,
+				CA045CB813AFCC5800AFED3C /* JKConstant.m in Sources */,
+				CA045CC113AFE2FF00AFED3C /* NSDictionary+JKJson.m in Sources */,
+				CA045CC513AFE3F300AFED3C /* NSArray+JKJson.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,7 +335,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -308,7 +352,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -387,6 +431,7 @@
 				CA68741813AE832300FA38F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA68741913AE832300FA38F6 /* Build configuration list for PBXNativeTarget "json_kidTests" */ = {
 			isa = XCConfigurationList;
@@ -395,6 +440,7 @@
 				CA68741B13AE832300FA38F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
