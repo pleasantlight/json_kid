@@ -11,9 +11,34 @@
 
 @implementation JKConstant
 
-JKConstant* const jkTrue;
-JKConstant* const jkFalse;
-JKConstant* const jkNull;
+JKConstant* _jkTrue;
+JKConstant* _jkFalse;
+JKConstant* _jkNull;
+
++(void) initialize {
+    _jkTrue = [[JKConstant alloc] init: 1];
+    _jkFalse = [[JKConstant alloc] init: 2];
+    _jkNull = [[JKConstant alloc] init: 3];
+}
+
+-(id) init:(int)constantId {
+    self = [super init];
+    if (self) {
+        _id = constantId;
+    }
+    
+    return self;
+}
+
++(JKConstant*)jkTrue { 
+    return _jkTrue; 
+}
++(JKConstant*)jkFalse { 
+    return _jkFalse; 
+}
++(JKConstant*)jkNull { 
+    return _jkNull; 
+}
 
 @end
 

@@ -14,8 +14,6 @@
     NSUInteger _maxLen;
     NSUInteger _ptr;
     unichar _currChar;
-    NSMutableDictionary* _dictionary;
-    NSMutableArray* _array;
     NSMutableArray* _errors;
     NSCharacterSet* _numberStarters;
 }
@@ -24,8 +22,6 @@
 @property NSUInteger maxLen;
 @property NSUInteger ptr;
 @property unichar currChar;
-@property (nonatomic, retain) NSMutableDictionary* dictionary;
-@property (nonatomic, retain) NSMutableArray* array;
 @property (nonatomic, retain) NSMutableArray* errors;
 @property (nonatomic, retain) NSCharacterSet* numberStarters;
 

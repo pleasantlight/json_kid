@@ -14,8 +14,6 @@
 @synthesize maxLen = _maxLen;
 @synthesize ptr = _ptr;
 @synthesize currChar = _currChar;
-@synthesize dictionary = _dictionary;
-@synthesize array = _array;
 @synthesize errors = _errors;
 @synthesize numberStarters = _numberStarters;
 
@@ -26,8 +24,6 @@
         _maxLen = 0;
         _ptr = 0;
         _currChar = '\0';
-        _dictionary = nil;
-        _array = nil;
         _errors = [[NSMutableArray alloc] init];
         _numberStarters = [NSCharacterSet characterSetWithCharactersInString:@"-0123456789"];
     }
@@ -51,6 +47,7 @@
         return nil;
     }
     
+    self.currChar = [self.string characterAtIndex:self.ptr];
 
     // Find the first character that's not a whitespace.
     [self fastForwardWhiteSpace];
@@ -85,16 +82,18 @@
         return nil;
     }
     
+    [self nextChar];
+    
     // Create the mutable dictionary we'll use to store the contents of the JSON data.
-    self.dictionary = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* dictionary = [[NSMutableDictionary alloc] init];
     
     // Collect key/value pairs.
     while (self.ptr < self.maxLen) {
         [self fastForwardWhiteSpace];
         
         NSRange keyRange = [self extractNextString];
-        if (keyRange.length <= 0) {
-            [self.errors addObject:[NSString stringWithFormat:@"Invalid JSON Syntax: Expected a string at position %d, but couldn't find one.", self.ptr]];
+        if (keyRange.location == NSNotFound) {
+            [self.errors addObject:[NSString stringWithFormat:@"Invalid JSON Syntax: Expected a string for key at position %d, but couldn't find one.", self.ptr]];
             return nil;
         }
         
@@ -106,6 +105,8 @@
             return nil;
         }
         
+        [self nextChar];
+        
         [self fastForwardWhiteSpace];
         
         id value = [self extractNextValue];
@@ -115,22 +116,26 @@
         }
         
         // Add the new key/value pair to the dictionary.
-        [self.dictionary setObject:value forKey:[self.string substringWithRange:keyRange]];
+        [dictionary setObject:value forKey:[self.string substringWithRange:keyRange]];
         [self fastForwardWhiteSpace];
         
         // The next character can be either a comma (',') or a closing bracket ('}').
-        if (self.currChar == ',')
+        if (self.currChar == ',') {
+            [self nextChar];
             continue;
+        }
         
-        if (self.currChar == '}')
+        if (self.currChar == '}') {
+            [self nextChar];
             break;
+        }
         
         [self.errors addObject:[NSString stringWithFormat:@"Invalid JSON Syntax: Expected either a comma or a closing bracket ('}') at position %d, but couldn't find it.", self.ptr]];
         return nil;
     }
     
     // It's all good.
-    return self.dictionary;
+    return dictionary;
 }
 
 - (id)extractNextArray {
@@ -140,8 +145,10 @@
         return nil;
     }
     
+    [self nextChar];
+    
     // Create the mutable array we'll use to store the contents of the JSON data.
-    self.array = [[NSMutableArray alloc] init];
+    NSMutableArray* array = [[NSMutableArray alloc] init];
     
     // Collect key/value pairs.
     while (self.ptr < self.maxLen) {
@@ -154,30 +161,34 @@
         }
         
         // Add the new value to the array.
-        [self.array addObject:value];
+        [array addObject:value];
         
         [self fastForwardWhiteSpace];
         
         // The next character can be either a comma (',') or a closing bracket (']').
-        if (self.currChar == ',')
+        if (self.currChar == ',') {
+            [self nextChar];
             continue;
+        }
         
-        if (self.currChar == ']')
+        if (self.currChar == ']') {
+            [self nextChar];
             break;
+        }
         
         [self.errors addObject:[NSString stringWithFormat:@"Invalid JSON Syntax: Expected either a comma or a closing bracket (']') at position %d, but couldn't find it.", self.ptr]];
         return nil;
     }
     
     // It's all good.
-    return self.array;
+    return array;
 }
 
 - (id)extractNextValue {
     // If the current character is a double quote, it's the start of a new string.
     if (self.currChar == '"') {
         NSRange nextStringRange = [self extractNextString];
-        if (nextStringRange.length <= 0) {
+        if (nextStringRange.location == NSNotFound) {
             [self.errors addObject:[NSString stringWithFormat:@"Invalid JSON Syntax: Was hoping to extract a string at position %d, but failed.", self.ptr]];
             return nil;
         }
@@ -194,7 +205,7 @@
          return [self extractNextObject];
     
     // If the current character is '[', it's the start of a new array.
-    if (self.currChar == '{')
+    if (self.currChar == '[')
         return [self extractNextArray];
     
     // If we got so far, it could only be one of the constants.
@@ -204,12 +215,13 @@
 - (NSRange)extractNextString {
     // Defensive: check that the first character is a double quote.
     if (self.currChar != '"')
-        return NSMakeRange(0, -1); 
+        return NSMakeRange(NSNotFound, 0); 
     
+    [self nextChar];
     int start = self.ptr;
     int len = 0;
     BOOL escapeSequenceOn = NO;
-    for ([self nextChar]; self.currChar != '\0'; [self nextChar], ++len) {
+    for (; self.currChar != '\0'; [self nextChar], ++len) {
         // NOTE: We don't parse the escape sequences, nor do we ascertain that the content 
         //       of the string is made of valid Unicode characters. Tough.
         if (self.currChar == '"' && escapeSequenceOn == NO)
@@ -221,6 +233,10 @@
             escapeSequenceOn = NO;
     }
     
+    if (self.currChar == '\0')
+        return NSMakeRange(NSNotFound, 0); 
+    
+    [self nextChar];
     return NSMakeRange(start, len);
 }
 
@@ -232,10 +248,11 @@
     double number = 0.0;
 
     double numberSign = 1.0;
-    if (self.currChar == '-')
+    if (self.currChar == '-') {
         numberSign = -1.0;
+        [self nextChar];
+    }
     
-    [self nextChar];
     if (self.currChar == '0') {
     }
     else if (self.currChar >= '1' && self.currChar <= '9') {
@@ -252,6 +269,7 @@
     
     // Now we're looking either for a decimal point, or an exponent symbol - otherwise it's the end of the number.
     if (self.currChar == '.') {
+        [self nextChar];
         double magnitude = 0.1;
         while (self.currChar >= '0' && self.currChar <= '9') {
             int digit = self.currChar - '0';
@@ -260,15 +278,14 @@
             [self nextChar];
         }                
     }
-    else if (self.currChar == 'e' || self.currChar == 'E') {
+    
+    if (self.currChar == 'e' || self.currChar == 'E') {
         // The next char must be '+' or '-'.
         [self nextChar];
-        double exponentSign = 0.0;
-        if (self.currChar == '+') {
-            exponentSign = 1.0;
-        }
-        else if (self.currChar == '-') {
+        double exponentSign = 1.0;
+        if (self.currChar == '-') {
             exponentSign = -1.0;
+            [self nextChar];
         }
         
         int exponent = 0;
@@ -284,7 +301,7 @@
     }
     
     number *= numberSign;
-    
+       
     return [NSNumber numberWithDouble:number];
 }
 
@@ -304,7 +321,8 @@
         if (self.currChar != 'e' && self.currChar != 'E')
             return nil;
         
-        return jkTrue;
+        [self nextChar];
+        return JKConstant.jkTrue;
     }
     else if (self.currChar == 'f' || self.currChar == 'F') {
         // We're looking for 'false'.
@@ -324,7 +342,8 @@
         if (self.currChar != 'e' && self.currChar != 'E')
             return nil;
         
-        return jkFalse;
+        [self nextChar];
+        return JKConstant.jkFalse;
     }
     else if (self.currChar == 'n' || self.currChar == 'N') {
         // We're looking for 'null'.
@@ -340,7 +359,8 @@
         if (self.currChar != 'l' && self.currChar != 'L')
             return nil;
         
-        return jkNull;
+        [self nextChar];
+        return JKConstant.jkNull;
 
     }
 
@@ -357,7 +377,7 @@
 }
 
 - (NSUInteger)fastForwardWhiteSpace {
-    while(self.currChar != '\0' && [[NSCharacterSet whitespaceCharacterSet] characterIsMember:self.currChar])
+    while(self.currChar != '\0' && [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:self.currChar])
         [self nextChar];
     
     return self.currChar;        

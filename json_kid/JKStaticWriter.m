@@ -121,11 +121,11 @@
     } else if ([objClassName isEqualToString:@"NSNumber"]) {
         objString = [NSString stringWithFormat:@"%@", [(NSNumber*)(obj) stringValue]];
     } else if ([objClassName isEqualToString:@"JKConstant"]) {
-        if ((JKConstant*)(obj) == jkTrue) {
+        if ((JKConstant*)(obj) == JKConstant.jkTrue) {
             objString = @"true";
-        } else if ((JKConstant*)(obj) == jkFalse) {
+        } else if ((JKConstant*)(obj) == JKConstant.jkFalse) {
             objString = @"false";
-        } else if ((JKConstant*)(obj) == jkNull) {
+        } else if ((JKConstant*)(obj) == JKConstant.jkNull) {
             objString = @"null";
         }
     }
