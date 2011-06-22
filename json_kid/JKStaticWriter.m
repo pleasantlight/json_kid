@@ -28,16 +28,15 @@
 // depth -  Internal.
 - (NSString*)createJsonObject:(NSDictionary*)dict withDepth:(int)depth {
     // Create the indentation string:
-    NSMutableString* indent = [NSString stringWithString:@""];
+    NSMutableString* indent = [NSMutableString stringWithString:@""];
     for (int i=0; i<depth; ++i)
         [indent appendString:@"    "];
     
-    NSMutableString* jsonObject = [NSString stringWithFormat:@"%@{ ", indent];
+    NSMutableString* jsonObject = [NSMutableString stringWithFormat:@"%@{ ", indent];
     
     BOOL firstKey = YES;
     for(id key in dict) {
-        NSString* keyClassName = [NSString stringWithUTF8String:class_getName([key class])];
-        if ([keyClassName isEqualToString:@"NSString"] == false) {
+        if ([key isKindOfClass:[NSString class]] == false && [key isKindOfClass:[NSMutableString class]] == false) {
             // Not a valid class for a key..
             continue;
         }
@@ -52,8 +51,13 @@
                 prefix = @",\n";
             }
 
-            NSString* keyObjString = [NSString stringWithFormat:@"%@%@    %@: %@", prefix, indent, (NSString*)(key), objString];
+            NSString* keyObjString = [NSString stringWithFormat:@"%@%@    \"%@\": %@", prefix, indent, (NSString*)(key), objString];
             [jsonObject appendString:keyObjString];
+            
+            NSLog(@"keyObjString:");
+            NSLog(@"\n%@", keyObjString);
+            NSLog(@"jsonObject:");
+            NSLog(@"\n%@", jsonObject);
         }
     }
 
@@ -72,22 +76,22 @@
 // depth -  Internal.
 - (NSString*)createJsonArray:(NSArray*)arr withDepth:(int)depth {
     // Create the indentation string:
-    NSMutableString* indent = [NSString stringWithString:@""];
+    NSMutableString* indent = [NSMutableString stringWithString:@""];
     for (int i=0; i<depth; ++i)
         [indent appendString:@"    "];
     
-    NSMutableString* jsonObject = [NSString stringWithFormat:@"%@[ ", indent];
+    NSMutableString* jsonObject = [NSMutableString stringWithFormat:@"%@[ ", indent];
     
     BOOL firstKey = YES;
     for(id obj in arr) {
         NSString* objString = [self getJsonStringForObject:obj withDepth:depth];
         if ([objString isEqualToString:@""] == NO) {
-            NSString* prefix = @"\n";
+            NSString* prefix = @" ";
             if (firstKey == YES) {
                 firstKey = NO;
             }
             else {
-                prefix = @",\n";
+                prefix = @", ";
             }
             
             NSString* keyObjString = [NSString stringWithFormat:@"%@%@    %@", prefix, indent, objString];
@@ -109,18 +113,17 @@
     // 3. A string (NSString).
     // 4. A number (NSNumber).
     // 5. A constant (true, false or null) (JKConstant).
-    NSString* objClassName = [NSString stringWithUTF8String:class_getName([obj class])];
-    if ([objClassName isEqualToString:@"NSDictionary"] || [objClassName isEqualToString:@"NSMutableDictionary"]) {
+    if ([obj isKindOfClass:[NSDictionary class]] || [obj isKindOfClass:[NSMutableDictionary class]]) {
         // Get the JSON string that represents this dictionary.
         objString = [NSString stringWithFormat:@"\n%@", [self createJsonObject:(NSDictionary*)(obj) withDepth:depth + 1]];
-    } else if ([objClassName isEqualToString:@"NSArray"] || [objClassName isEqualToString:@"NSMutableArray"]) {
+    } else if ([obj isKindOfClass:[NSArray class]] || [obj isKindOfClass:[NSMutableArray class]]) {
         // Get the JSON string that represents this array.
         objString = [NSString stringWithFormat:@"\n%@", [self createJsonArray:(NSArray*)(obj) withDepth:depth + 1]];
-    } else if ([objClassName isEqualToString:@"NSString"]) {
+    } else if ([obj isKindOfClass:[NSString class]]) {
         objString = [NSString stringWithFormat:@"\"%@\"", (NSString*)(obj)];
-    } else if ([objClassName isEqualToString:@"NSNumber"]) {
+    } else if ([obj isKindOfClass:[NSNumber class]]) {
         objString = [NSString stringWithFormat:@"%@", [(NSNumber*)(obj) stringValue]];
-    } else if ([objClassName isEqualToString:@"JKConstant"]) {
+    } else if ([obj isKindOfClass:[JKConstant class]]) {
         if ((JKConstant*)(obj) == JKConstant.jkTrue) {
             objString = @"true";
         } else if ((JKConstant*)(obj) == JKConstant.jkFalse) {
