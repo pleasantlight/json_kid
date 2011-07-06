@@ -41,6 +41,8 @@
             continue;
         }
         
+        NSString* escapedKey = [self escapeJsonString:(NSString*)(key)];
+        
         NSString* objString = [self getJsonStringForObject:[dict objectForKey:key] withDepth:depth];        
         if ([objString isEqualToString:@""] == NO) {
             NSString* prefix = @"\n";
@@ -51,13 +53,8 @@
                 prefix = @",\n";
             }
 
-            NSString* keyObjString = [NSString stringWithFormat:@"%@%@    \"%@\": %@", prefix, indent, (NSString*)(key), objString];
+            NSString* keyObjString = [NSString stringWithFormat:@"%@%@    %@: %@", prefix, indent, escapedKey, objString];
             [jsonObject appendString:keyObjString];
-            
-            NSLog(@"keyObjString:");
-            NSLog(@"\n%@", keyObjString);
-            NSLog(@"jsonObject:");
-            NSLog(@"\n%@", jsonObject);
         }
     }
 
@@ -120,7 +117,7 @@
         // Get the JSON string that represents this array.
         objString = [NSString stringWithFormat:@"\n%@", [self createJsonArray:(NSArray*)(obj) withDepth:depth + 1]];
     } else if ([obj isKindOfClass:[NSString class]]) {
-        objString = [NSString stringWithFormat:@"\"%@\"", (NSString*)(obj)];
+        objString = [self escapeJsonString:(NSString*)(obj)];
     } else if ([obj isKindOfClass:[NSNumber class]]) {
         objString = [NSString stringWithFormat:@"%@", [(NSNumber*)(obj) stringValue]];
     } else if ([obj isKindOfClass:[JKConstant class]]) {
@@ -134,6 +131,31 @@
     }
     
     return objString;
+}
+
+// escape all reverse slashes (solidus), all double quotes and all control characters. Everything else that's unicode is allowed.
+- (NSString*)escapeJsonString:(NSString*)str {
+    int len = str.length;
+    char* escapedStr = (char*)malloc((len + 1) * 2);
+    memset(escapedStr, 0, (len + 1) * 2);
+    int ptr = 0;
+    
+    for (int i=0; i<len; ++i) {
+        unichar c = [str characterAtIndex:i];
+        switch (c) {
+            case '"':  escapedStr[ptr] = '\\'; escapedStr[ptr+1] = '"'; ptr += 2; break;
+            case '\\': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = '\\'; ptr += 2; break;
+            case '/': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = '/'; ptr += 2; break;
+            case '\b': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = 'b'; ptr += 2; break;
+            case '\f': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = 'f'; ptr += 2; break;
+            case '\n': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = 'n'; ptr += 2; break;
+            case '\r': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = 'r'; ptr += 2; break;
+            case '\t': escapedStr[ptr] = '\\'; escapedStr[ptr+1] = 't'; ptr += 2; break;
+            default: escapedStr[ptr] = c; ++ptr; break;
+        }
+    }
+    
+    return [NSString stringWithFormat:@"\"%@\"", [NSString stringWithCString:escapedStr encoding:NSUTF8StringEncoding]];
 }
 
 @end

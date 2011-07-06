@@ -97,6 +97,9 @@
             return nil;
         }
         
+        NSString* rawKey = [self.string substringWithRange:keyRange];
+        NSString* unescapedKey = [self unescapeJsonString:rawKey];
+        
         [self fastForwardWhiteSpace];
         
         // The separator must be ':'.
@@ -116,7 +119,7 @@
         }
         
         // Add the new key/value pair to the dictionary.
-        [dictionary setObject:value forKey:[self.string substringWithRange:keyRange]];
+        [dictionary setObject:value forKey:unescapedKey];
         [self fastForwardWhiteSpace];
         
         // The next character can be either a comma (',') or a closing bracket ('}').
@@ -135,7 +138,7 @@
     }
     
     // It's all good.
-    return dictionary;
+    return [NSDictionary dictionaryWithDictionary:dictionary];
 }
 
 - (id)extractNextArray {
@@ -181,7 +184,7 @@
     }
     
     // It's all good.
-    return array;
+    return [NSArray arrayWithArray:array];
 }
 
 - (id)extractNextValue {
@@ -193,7 +196,8 @@
             return nil;
         }
         
-        return [self.string substringWithRange:nextStringRange];
+        NSString* rawString = [self.string substringWithRange:nextStringRange];
+        return [self unescapeJsonString:rawString];
     }
     
     // If the current character is a digit (or a minus sign), it's the start of a new number.
@@ -254,6 +258,7 @@
     }
     
     if (self.currChar == '0') {
+        [self nextChar];
     }
     else if (self.currChar >= '1' && self.currChar <= '9') {
         while (self.currChar >= '0' && self.currChar <= '9') {
@@ -381,6 +386,63 @@
         [self nextChar];
     
     return self.currChar;        
+}
+
+// unescape all reverse slashes (solidus) and all double quotes. Everything else that's unicode is allowed.
+- (NSString*)unescapeJsonString:(NSString*)str {
+    int len = str.length;
+    char* unescapedStr = (char*)malloc(len + 1);
+    memset(unescapedStr, 0, len + 1);
+    int newCharIndex = 0;
+    
+    int i = 0;
+
+    // If the string still has surrounding quotes (shouldn't have, but anyway) - skip them.
+    if ([str characterAtIndex:i] == '"' && [str characterAtIndex:(len - 1)] == '"') {
+        ++i;
+        --len;
+    }
+    
+    for (int i=0; i<len; ++i) {
+        unichar c = [str characterAtIndex:i];
+        
+        switch(c) {
+            case '"': 
+            case '\b':
+            case '\f':
+            case '\n':
+            case '\r':
+            case '\t':
+                // Unescaped double quotes or control characters are NOT allowed!
+                ++i;
+                break;
+                
+            case '\\':
+                ++i;
+                c = [str characterAtIndex:i];
+                switch (c) {
+                    case '\\': unescapedStr[newCharIndex] = '\\'; ++newCharIndex; ++i; break;
+                    case '"': unescapedStr[newCharIndex] = '\"'; ++newCharIndex; ++i; break;
+                    case '/': unescapedStr[newCharIndex] = '/'; ++newCharIndex; ++i; break;
+                    case 'b': unescapedStr[newCharIndex] = '\b'; ++newCharIndex; ++i; break;
+                    case 'f': unescapedStr[newCharIndex] = '\f'; ++newCharIndex; ++i; break;
+                    case 'n': unescapedStr[newCharIndex] = '\n'; ++newCharIndex; ++i; break;
+                    case 'r': unescapedStr[newCharIndex] = '\r'; ++newCharIndex; ++i; break;
+                    case 't': unescapedStr[newCharIndex] = '\t'; ++newCharIndex; ++i; break;
+                    default:
+                        // We don't allow other escape sequences.
+                        break;
+                }
+                break;
+                
+            default: 
+                unescapedStr[newCharIndex] = c;
+                ++newCharIndex;
+                break;
+        }
+    }
+    
+    return [NSString stringWithCString:unescapedStr encoding:NSUTF8StringEncoding];
 }
 
 @end

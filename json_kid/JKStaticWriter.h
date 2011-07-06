@@ -19,4 +19,6 @@
 
 - (NSString*)getJsonStringForObject:(id)obj withDepth:(int)depth;
 
+- (NSString*)escapeJsonString:(NSString*)str;
+
 @end

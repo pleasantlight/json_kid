@@ -38,4 +38,6 @@
 - (unichar)nextChar;
 - (NSUInteger)fastForwardWhiteSpace;
 
+- (NSString*)unescapeJsonString:(NSString*)str;
+
 @end
