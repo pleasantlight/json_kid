@@ -83,9 +83,16 @@
     }
     
     [self nextChar];
+    [self fastForwardWhiteSpace];
     
     // Create the mutable dictionary we'll use to store the contents of the JSON data.
     NSMutableDictionary* dictionary = [[NSMutableDictionary alloc] init];
+    
+    // Check for an empty object.
+    if (self.currChar == '}') {
+        [self nextChar];
+        return dictionary;
+    }
     
     // Collect key/value pairs.
     while (self.ptr < self.maxLen) {
@@ -148,10 +155,16 @@
         return nil;
     }
     
-    [self nextChar];
-    
     // Create the mutable array we'll use to store the contents of the JSON data.
     NSMutableArray* array = [[NSMutableArray alloc] init];
+
+    [self nextChar];
+    [self fastForwardWhiteSpace];
+    
+    if (self.currChar == ']') {
+        [self nextChar];
+        return array;
+    }
     
     // Collect key/value pairs.
     while (self.ptr < self.maxLen) {
@@ -195,6 +208,10 @@
             [self.errors addObject:[NSString stringWithFormat:@"Invalid JSON Syntax: Was hoping to extract a string at position %d, but failed.", self.ptr]];
             return nil;
         }
+        
+        // Check for an emtpy string.
+        if (nextStringRange.length == 0)
+            return @"";
         
         NSString* rawString = [self.string substringWithRange:nextStringRange];
         return [self unescapeJsonString:rawString];
